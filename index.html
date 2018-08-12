@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <script src="js/foodstore.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css"
+    />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script src="js/sign-in.js" type="text/javascript"></script> <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script>
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                      "background": "#252e39"
+                    },
+                    "button": {
+                      "background": "#14a7d0"
+                    }
+                  },
+                "theme": "classic",
+                "position": "bottom-right"
+            })
+        });
+    </script>
+    <title>Google SignIn</title>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="826843394404-6lu6t8tntn82jq42fc7av4tb58fjnn77.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+
+<body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    <a href="movies.html">Go to Movies</a><br/><br/>
+    <a href="buttons.html">Go to Buttons</a>
+    <img src="images/color.jpg" alt="">
+    <h3>The Online Restaurant</h3>
+    <p>Enter the food you would like to order:
+        <input onkeyup="process()" type="text" id="userInput">
+    </p>
+    <h3>JavaScript Cookie Example</h3>
+    <p>
+        In the example to follow, we will create a cookie that stores the name of a visitor. The first time a visitor arrives to
+        the web page, he will be asked to fill in his name. The name is then stored in a cookie. The next time the visitor
+        arrives at the same page, he will get a welcome message. For the example we will create 3 JavaScript functions:
+    </p>
+    <ol type="1">
+        <li>A function to set a cookie value</li>
+        <li>A function to get a cookie value</li>
+        <li>A function to check a cookie value</li>
+    </ol>
+    <div id="underUserInput"></div>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+</body>
+
+</html>
+
+<!-- You can use 
+    --onchange event
+    --onload event
+    --onkeyup event
+-->
