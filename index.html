@@ -1,67 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
-    <title>WebSockets | Node.js</title>
+    <title>Chat App | Socket.IO</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
     <style>
-        div#log {
-            width:800px;
-            height: 300px;
-            margin: 0 auto;
-            border: 5px solid black;
-            border-radius: 7px;
+        body {
+           margin-top: 30px;    
         }
-        div#sendControls {
-            width: 235px;
-            margin: 30px auto;
+        .well {
+            background: #4285F4;
+            text-align: center;
+        }
+        #messageArea {
+            /*display: none;*/
+            visibility: hidden;
+        }
+        #message {
+            margin-bottom: 20px;
+        }
+        #typing{
+            height: 35px;
+            font-style: italic; 
+            padding-bottom: 0px;
+        }
+        #chat {
+            margin-top: 15px;
+        }
+        .chats{
+            background-color: #f7f8f9;
+            margin: 0px;
+            margin-top: 1px;
+        }
+        #loginText {
+            margin-bottom: 50px; 
+            text-align: center;
+        }
+        #loginButton {
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
-    
-     <div id="log"></div>
-        
-    <div id="sendControls">
-        <input type="text" placeholder="Your message here" id="text">
-        <button>Send</button><br><br>
+    <div class="container">
+        <!--Login Form -->
+        <div id="userFormArea" class="row">
+                <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <h1 id="loginText">Login</h1>
+                <form id="userForm">
+                    <div class="form-group">
+                        <input name="username" type="text" id="username" class="form-control" placeholder="Username" />
+                        <br>
+                        <input name="password" type="password" id="password" class="form-control" placeholder="Password" />
+                        <br>
+                        <input type="submit" value="Login" class="btn btn-primary" id="loginButton">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Message Area -->
+        <div class="row" id="messageArea">
+            <div class="col-md-12"><h1 style="text-align: center;">Chat App</h1></div>
+            <div class="col-md-3">
+                <div class="well">
+                    <h3>Users Online</h3>
+                    <ul class="list-group" id="users"></ul>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="chat" id="chat"></div>
+                <form id="messageForm">
+                    <div class="row">
+                        <div class="col-md-12" id="typing"></div>
+                        <div class="col-md-10">
+                            <input name="message" id="message" type="text" class="form-control" placeholder="Type message" />
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" value="Send" class="btn btn-primary" style="width: 100%;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End of message area -->
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        let name = prompt("What is your name ?");
+        $(() => {
+            let socket = io();
+            let username = $('#username');
+            let typing = $('#typing');
 
-        let socket = new WebSocket("ws://localhost:5001");
-        socket.onopen = function() {
-            socket.send(JSON.stringify({
-                type: "name",
-                data:  name
-            }));
-        }
+            $('#userForm').submit(() => {
+                socket.emit('new user', username.val(), data => {
+                    if(data){
+                        $('#userFormArea').hide();
+                        $('#messageArea').css('visibility', 'visible');
+                    }
+                });
+                $('#username').val('');
+                return false;
+            });
+            socket.on('get users', (usernames) => {
+                $('#users').html('');
+                // document.getElementById('users').innerHTML = "";
+                usernames.forEach(username => {                    
+                   $('#users').append('<li class="list-group-item">'+username+'</li>');
+                });
+            });
 
-        let log = document.getElementById('log');
+            $('#messageForm').submit(() => {
+                socket.emit('send message', $('#message').val());
+                $('#message').val('');
+                return false;
+            });
+            socket.on('new message', (data) => {
+                typing.html('');
+                $('#chat').append('<div class="chats"><strong>' + data.usr + '</strong>: ' + data.mes + '</div>');
+            });
 
-        socket.onerror = function(event){
-            // create  toast or console.log the error
-            console.log("Sorrry an error occured");
-        }
-        socket.onmessage = function(event){
-            console.log(event);
-            let json = JSON.parse(event.data);
-            log.innerHTML += json.name + ": " + json.data + "<br>";
-        };
-        
-        document.querySelector('button').onclick = function() {
-            let text = document.getElementById('text').value;
-            // sock.send(text);
-            socket.send(JSON.stringify({
-                type: "message",
-                data:  text
-            }));
-            log.innerHTML += "You: " + text + "<br>";
-        }
+            // listen to keypress event[typing] on message field
+            $('#message').keypress(() => {
+                socket.emit('typing');
+            });
+            socket.on('typing', (msg) => {
+                typing.html(msg);
+            });
+
+        });        
     </script>
 </body>
 

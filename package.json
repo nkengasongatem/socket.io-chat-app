@@ -1,0 +1,12 @@
+{
+  "name": "chat_app",
+  "version": "1.0.0",
+  "description": "A simple chat app done following traversy media's tutorial",
+  "author": "Nkengasong Atem",
+  "license": "ISC",
+  "main": "server.js",
+  "dependencies": {
+    "socket.io": "latest",
+    "express": "latest"
+  }
+}
